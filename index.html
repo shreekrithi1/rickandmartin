@@ -1792,206 +1792,415 @@
                                                 </div>
                                         </div>
                                 </div>
+                        </section>
 
-                                <!-- ============================================================
-             SECTION 2: STRATEGIC VALUE ANALYSIS
+                        <!-- ============================================================
+             SECTION 1.7: E2E ANALYTICS SPECIFICATION
              ============================================================ -->
-                                <section class="mt-24 mb-16">
-                                        <header class="mb-12 text-center">
-                                                <span
-                                                        class="text-xs font-mono text-white/40 uppercase tracking-widest block mb-2">Strategic
-                                                        Impact</span>
-                                                <h2
-                                                        class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white mb-4">
-                                                        Why Build <span
-                                                                class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">In-House?</span>
-                                                </h2>
-                                                <p class="text-white/50 max-w-2xl mx-auto">
-                                                        While third-party solutions offer speed, building a proprietary
-                                                        engine
-                                                        ("askMyNexus") secures critical long-term advantages in data
-                                                        sovereignty, customization, and agility.
-                                                </p>
-                                        </header>
-                                        <div class="glass rounded-xl overflow-hidden shadow-2xl">
-                                                <table class="w-full text-sm">
-                                                        <thead>
-                                                                <tr class="bg-white/5 border-b border-white/10">
-                                                                        <th
-                                                                                class="p-4 text-left text-white/60 font-bold uppercase tracking-wider">
-                                                                                Strategic Factor</th>
-                                                                        <th
-                                                                                class="p-4 text-center text-emerald-400 font-bold uppercase tracking-wider bg-emerald-900/20">
-                                                                                Nexus In-House</th>
-                                                                        <th
-                                                                                class="p-4 text-center text-white/40 font-bold uppercase tracking-wider">
-                                                                                Third-Party SaaS</th>
+                        <section class="mt-24 mb-16">
+                                <header class="mb-12 text-center">
+                                        <span
+                                                class="text-xs font-mono text-white/40 uppercase tracking-widest block mb-2">System
+                                                Capability</span>
+                                        <h2
+                                                class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white mb-4">
+                                                Admin > <span
+                                                        class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Analytics
+                                                        E2E</span>
+                                        </h2>
+                                        <p class="text-white/50 max-w-2xl mx-auto">
+                                                Comprehensive breakdown of the Real-Time & Historical Intelligence
+                                                Layer.
+                                        </p>
+                                </header>
+
+                                <!-- 1. Architecture Overview -->
+                                <div class="glass rounded-xl p-8 mb-8 border border-white/10">
+                                        <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                                <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                                        </path>
+                                                </svg>
+                                                1. High-Level Architecture
+                                        </h3>
+                                        <div class="grid md:grid-cols-2 gap-6">
+                                                <div class="bg-black/30 p-4 rounded-lg border border-white/5">
+                                                        <div class="text-orange-400 font-bold mb-1">Speed Layer
+                                                                (Real-Time)</div>
+                                                        <p class="text-xs text-white/60">Immediate feedback for trending
+                                                                topics, live video stats, and operational monitoring.
+                                                                Latency < 1m.</p>
+                                                </div>
+                                                <div class="bg-black/30 p-4 rounded-lg border border-white/5">
+                                                        <div class="text-blue-400 font-bold mb-1">Batch Layer
+                                                                (Historical)</div>
+                                                        <p class="text-xs text-white/60">Deep learning, monthly
+                                                                reporting, user segmentation, and long-term trend
+                                                                analysis (Petabyte Scale).</p>
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <!-- 2. Functional Requirements -->
+                                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                                        <!-- A. Data Ingestion -->
+                                        <div class="glass rounded-xl p-6 border border-white/10">
+                                                <h4 class="text-lg font-bold text-white mb-3">A. Ingestion (100k+ TPS)
+                                                </h4>
+                                                <ul class="text-xs text-white/70 space-y-2 list-disc list-inside">
+                                                        <li><strong class="text-white">Event Tracking:</strong>
+                                                                Web/Mobile SDKs (Clicks, Scrolls, Shares).</li>
+                                                        <li><strong class="text-white">Backend Logs:</strong> API
+                                                                Latency, Errors, Db Transactions.</li>
+                                                        <li><strong class="text-white">Ad Networks:</strong> Integration
+                                                                with Google/FB Ads APIs for ROI.</li>
+                                                </ul>
+                                        </div>
+                                        <!-- B. Processing -->
+                                        <div class="glass rounded-xl p-6 border border-white/10">
+                                                <h4 class="text-lg font-bold text-white mb-3">B. Processing</h4>
+                                                <ul class="text-xs text-white/70 space-y-2 list-disc list-inside">
+                                                        <li><strong class="text-white">Real-time:</strong> Detect
+                                                                "Trending" topics in &lt;30s.</li>
+                                                        <li><strong class="text-white">Enrichment:</strong> Geo-tagging
+                                                                (IP->City), User Metadata.</li>
+                                                        <li><strong class="text-white">Sentiment:</strong> NLP Scoring
+                                                                (Pos/Neut/Neg) on comments.</li>
+                                                        <li><strong class="text-white">Sessionization:</strong> Group
+                                                                events into user sessions.</li>
+                                                </ul>
+                                        </div>
+                                        <!-- C. Reporting -->
+                                        <div class="glass rounded-xl p-6 border border-white/10">
+                                                <h4 class="text-lg font-bold text-white mb-3">C. Reporting</h4>
+                                                <ul class="text-xs text-white/70 space-y-2 list-disc list-inside">
+                                                        <li><strong class="text-white">Engagement:</strong> DAU/MAU,
+                                                                Retention (D1/D7/D30).</li>
+                                                        <li><strong class="text-white">Performance:</strong> Views,
+                                                                Watch Time, CTR.</li>
+                                                        <li><strong class="text-white">Ad-Hoc:</strong> SQL over
+                                                                Petabytes (Response &lt;3s).</li>
+                                                        <li><strong class="text-white">A/B Testing:</strong> Divergence
+                                                                tracking (Control vs Test).</li>
+                                                </ul>
+                                        </div>
+                                </div>
+
+                                <!-- 3. Non-Functional & Data -->
+                                <div class="glass rounded-xl p-8 mb-8 border border-white/10">
+                                        <h3 class="text-xl font-bold text-white mb-6">3. Non-Functional & Data Strategy
+                                        </h3>
+                                        <div class="overflow-x-auto">
+                                                <table class="w-full text-xs text-left mb-6">
+                                                        <thead
+                                                                class="text-white/40 uppercase tracking-widest border-b border-white/10">
+                                                                <tr>
+                                                                        <th class="py-2">Metric</th>
+                                                                        <th class="py-2">Requirement</th>
+                                                                        <th class="py-2">Implementation</th>
                                                                 </tr>
                                                         </thead>
-                                                        <tbody class="divide-y divide-white/5">
-                                                                <tr class="hover:bg-white/5">
-                                                                        <td class="p-4 text-white/70">Data Sovereignty &
-                                                                                Privacy
-                                                                        </td>
-                                                                        <td class="p-4 text-center bg-emerald-900/10">
-                                                                                <span
-                                                                                        class="text-emerald-400 font-bold">100%
-                                                                                        On-Premise</span>
-                                                                        </td>
-                                                                        <td class="p-4 text-center"><span
-                                                                                        class="text-red-400">Data leaves
-                                                                                        network</span></td>
+                                                        <tbody class="divide-y divide-white/5 text-white/80">
+                                                                <tr>
+                                                                        <td class="py-2 font-bold text-white">E2E
+                                                                                Latency</td>
+                                                                        <td>&lt; 1 Minute</td>
+                                                                        <td>From "Event" to "Dashboard"</td>
                                                                 </tr>
-                                                                <tr class="hover:bg-white/5">
-                                                                        <td class="p-4 text-white/70">Customization
-                                                                                Depth</td>
-                                                                        <td class="p-4 text-center bg-emerald-900/10">
-                                                                                <span
-                                                                                        class="text-emerald-400 font-bold">Unlimited</span>
-                                                                        </td>
-                                                                        <td class="p-4 text-center"><span
-                                                                                        class="text-yellow-400">Limited
-                                                                                        to
-                                                                                        API</span></td>
-                                                                </tr>
-                                                                <tr class="hover:bg-white/5">
-                                                                        <td class="p-4 text-white/70">Vendor Lock-In
-                                                                                Risk</td>
-                                                                        <td class="p-4 text-center bg-emerald-900/10">
-                                                                                <span
-                                                                                        class="text-emerald-400 font-bold">None</span>
-                                                                        </td>
-                                                                        <td class="p-4 text-center"><span
-                                                                                        class="text-red-400">High</span>
+                                                                <tr>
+                                                                        <td class="py-2 font-bold text-white">
+                                                                                Availability</td>
+                                                                        <td>99.99%</td>
+                                                                        <td>No Single Point of Failure, Kafka Re-routing
                                                                         </td>
                                                                 </tr>
-                                                                <tr class="hover:bg-white/5">
-                                                                        <td class="p-4 text-white/70">IP Ownership</td>
-                                                                        <td class="p-4 text-center bg-emerald-900/10">
-                                                                                <span
-                                                                                        class="text-emerald-400 font-bold">100%
-                                                                                        Owned</span>
+                                                                <tr>
+                                                                        <td class="py-2 font-bold text-white">Privacy
                                                                         </td>
-                                                                        <td class="p-4 text-center"><span
-                                                                                        class="text-red-400">Licensed
-                                                                                        Only</span></td>
+                                                                        <td>GDPR / CCPA</td>
+                                                                        <td>PII Masking, "Right to be Forgotten" Purge
+                                                                        </td>
                                                                 </tr>
-                                                                <tr class="hover:bg-white/5">
-                                                                        <td class="p-4 text-white/70">Regulatory
-                                                                                Compliance
-                                                                                Control</td>
-                                                                        <td class="p-4 text-center bg-emerald-900/10">
-                                                                                <span
-                                                                                        class="text-emerald-400 font-bold">Full
-                                                                                        Control</span>
+                                                                <tr>
+                                                                        <td class="py-2 font-bold text-white">Security
                                                                         </td>
-                                                                        <td class="p-4 text-center"><span
-                                                                                        class="text-yellow-400">Dependent
-                                                                                        on
-                                                                                        Vendor</span></td>
-                                                                </tr>
-                                                                <tr class="hover:bg-white/5">
-                                                                        <td class="p-4 text-white/70">Feature Roadmap
-                                                                                Control
-                                                                        </td>
-                                                                        <td class="p-4 text-center bg-emerald-900/10">
-                                                                                <span
-                                                                                        class="text-emerald-400 font-bold">100%
-                                                                                        Internal</span>
-                                                                        </td>
-                                                                        <td class="p-4 text-center"><span
-                                                                                        class="text-red-400">Vendor
-                                                                                        Dependent</span></td>
-                                                                </tr>
-                                                                <tr class="hover:bg-white/5">
-                                                                        <td class="p-4 text-white/70">Exit Strategy
-                                                                                Flexibility
-                                                                        </td>
-                                                                        <td class="p-4 text-center bg-emerald-900/10">
-                                                                                <span
-                                                                                        class="text-emerald-400 font-bold">Anytime</span>
-                                                                        </td>
-                                                                        <td class="p-4 text-center"><span
-                                                                                        class="text-red-400">Contract
-                                                                                        Bound</span></td>
+                                                                        <td>RBAC</td>
+                                                                        <td>Role-Based (Marketing vs Eng vs Data
+                                                                                Science)</td>
                                                                 </tr>
                                                         </tbody>
                                                 </table>
                                         </div>
 
-                                        <!-- Strategic Recommendation Box -->
-                                        <div
-                                                class="mt-12 glass rounded-2xl p-8 border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-900/20 to-transparent">
-                                                <h3
-                                                        class="text-xl font-black text-emerald-400 uppercase tracking-wider mb-4">
-                                                        Strategic Final Verdict</h3>
-                                                <div class="grid md:grid-cols-2 gap-8">
-                                                        <div>
-                                                                <p class="text-white/80 leading-relaxed mb-4">
-                                                                        Building Nexus is not merely a software project;
-                                                                        it is a
-                                                                        <strong class="text-white">capability
-                                                                                acquisition</strong>.
-                                                                        It asserts that our organization will be a
-                                                                        primary
-                                                                        operator of Sovereign AI, not just a consumer.
-                                                                </p>
-                                                                <p class="text-white/80 leading-relaxed">
-                                                                        While competitors rely on generic, black-box
-                                                                        third-party
-                                                                        tools, <strong
-                                                                                class="text-emerald-400">Nexus</strong>
-                                                                        provides a branded, secure, and infinitely
-                                                                        adaptable
-                                                                        "Neural Nervous System" for our enterprise
-                                                                        knowledge.
-                                                                </p>
+                                        <div class="grid md:grid-cols-4 gap-4 text-center">
+                                                <div class="bg-red-500/10 p-3 rounded border border-red-500/20">
+                                                        <div class="text-red-400 font-bold text-xs uppercase">Raw Stream
                                                         </div>
-                                                        <div class="bg-black/30 rounded-xl p-6">
-                                                                <div
-                                                                        class="text-xs text-white/40 uppercase tracking-widest mb-3">
-                                                                        Recommendation</div>
-                                                                <div class="text-2xl font-black text-emerald-400 mb-2">
-                                                                        Build
-                                                                        In-House</div>
-                                                                <ul class="space-y-2 text-sm text-white/70">
-                                                                        <li class="flex items-center gap-2"><span
-                                                                                        class="text-emerald-400">✓</span>
-                                                                                Full Data Sovereignty (Zero Egress)</li>
-                                                                        <li class="flex items-center gap-2"><span
-                                                                                        class="text-emerald-400">✓</span>
-                                                                                Own the IP & Model Weights</li>
-                                                                        <li class="flex items-center gap-2"><span
-                                                                                        class="text-emerald-400">✓</span>
-                                                                                Futuristic, Cinematic UX</li>
-                                                                        <li class="flex items-center gap-2"><span
-                                                                                        class="text-emerald-400">✓</span>
-                                                                                Vendor-Agnostic Agility</li>
-                                                                        <li class="flex items-center gap-2"><span
-                                                                                        class="text-emerald-400">✓</span>
-                                                                                Deep Internal System Integration</li>
-                                                                </ul>
+                                                        <div class="text-[10px] text-white/60">7 Days Retention</div>
+                                                        <div class="text-[10px] text-white">Kafka / Kinesis</div>
+                                                </div>
+                                                <div class="bg-yellow-500/10 p-3 rounded border border-yellow-500/20">
+                                                        <div class="text-yellow-400 font-bold text-xs uppercase">
+                                                                Aggregated</div>
+                                                        <div class="text-[10px] text-white/60">1-2 Years</div>
+                                                        <div class="text-[10px] text-white">Time-Series DB</div>
+                                                </div>
+                                                <div class="bg-blue-500/10 p-3 rounded border border-blue-500/20">
+                                                        <div class="text-blue-400 font-bold text-xs uppercase">
+                                                                Historical</div>
+                                                        <div class="text-[10px] text-white/60">Indefinite (7+ Yrs)</div>
+                                                        <div class="text-[10px] text-white">Cold Storage (S3)</div>
+                                                </div>
+                                                <div class="bg-purple-500/10 p-3 rounded border border-purple-500/20">
+                                                        <div class="text-purple-400 font-bold text-xs uppercase">User
+                                                                Dim</div>
+                                                        <div class="text-[10px] text-white/60">Snapshot + History</div>
+                                                        <div class="text-[10px] text-white">Data Warehouse</div>
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <!-- 5. Tech Stack & API -->
+                                <div class="grid md:grid-cols-2 gap-6">
+                                        <div class="glass rounded-xl p-6 border border-white/10 text-xs">
+                                                <h4
+                                                        class="text-sm font-bold text-white mb-4 uppercase tracking-widest text-center">
+                                                        Recommended Stack</h4>
+                                                <div class="space-y-3">
+                                                        <div class="flex justify-between border-b border-white/5 pb-2">
+                                                                <span class="text-white/60">Ingestion</span>
+                                                                <span class="text-emerald-400 font-mono">Apache Kafka /
+                                                                        AWS Kinesis</span>
+                                                        </div>
+                                                        <div class="flex justify-between border-b border-white/5 pb-2">
+                                                                <span class="text-white/60">Stream Proc</span>
+                                                                <span class="text-emerald-400 font-mono">Flink / Spark
+                                                                        Streaming</span>
+                                                        </div>
+                                                        <div class="flex justify-between border-b border-white/5 pb-2">
+                                                                <span class="text-white/60">Real-Time OLAP</span>
+                                                                <span class="text-emerald-400 font-mono">Druid /
+                                                                        ClickHouse</span>
+                                                        </div>
+                                                        <div class="flex justify-between border-b border-white/5 pb-2">
+                                                                <span class="text-white/60">Warehouse</span>
+                                                                <span class="text-emerald-400 font-mono">Snowflake /
+                                                                        BigQuery</span>
+                                                        </div>
+                                                        <div class="flex justify-between border-b border-white/5 pb-2">
+                                                                <span class="text-white/60">Vis</span>
+                                                                <span class="text-emerald-400 font-mono">Superset /
+                                                                        Looker</span>
                                                         </div>
                                                 </div>
                                         </div>
 
-                                        <div class="mt-8 text-center text-white/30 text-xs font-mono">
-                                                <p>Technical Assessment by Nexus Future Architecture Lab.</p>
-                                        </div>
-                                </section>
+                                        <div class="glass rounded-xl p-6 border border-white/10">
+                                                <h4
+                                                        class="text-sm font-bold text-white mb-4 uppercase tracking-widest text-center">
+                                                        Internal API Contracts</h4>
+                                                <div
+                                                        class="bg-black/50 p-4 rounded font-mono text-[10px] text-blue-300 overflow-x-auto">
+                                                        <pre>POST /v1/event
+# Clients send batch user events
 
-                                <button onclick="window.print()"
-                                        class="fixed bottom-8 right-8 bg-white text-black font-bold py-3 px-6 rounded-full shadow-lg z-50 hover:scale-105 transition-transform no-print flex items-center gap-2 cursor-pointer border-2 border-black/10">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                <polyline points="7 10 12 15 17 10" />
-                                                <line x1="12" x2="12" y1="15" y2="3" />
-                                        </svg>
-                                        Download Analysis PDF
-                                </button>
+GET /v1/metrics/user/{userID}
+# Engagement stats (Year in Review)
+
+GET /v1/trends/global
+# Current top hashtags for "Explore"</pre>
+                                                </div>
+                                        </div>
+                                </div>
+                                <span class="text-xs font-mono text-white/40 uppercase tracking-widest block mb-2">Strategic
+                                        Impact</span>
+                                <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white mb-4">
+                                        Why Build <span
+                                                class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">In-House?</span>
+                                </h2>
+                                <p class="text-white/50 max-w-2xl mx-auto">
+                                        While third-party solutions offer speed, building a proprietary
+                                        engine
+                                        ("askMyNexus") secures critical long-term advantages in data
+                                        sovereignty, customization, and agility.
+                                </p>
+                                </header>
+                                <div class="glass rounded-xl overflow-hidden shadow-2xl">
+                                        <table class="w-full text-sm">
+                                                <thead>
+                                                        <tr class="bg-white/5 border-b border-white/10">
+                                                                <th
+                                                                        class="p-4 text-left text-white/60 font-bold uppercase tracking-wider">
+                                                                        Strategic Factor</th>
+                                                                <th
+                                                                        class="p-4 text-center text-emerald-400 font-bold uppercase tracking-wider bg-emerald-900/20">
+                                                                        Nexus In-House</th>
+                                                                <th
+                                                                        class="p-4 text-center text-white/40 font-bold uppercase tracking-wider">
+                                                                        Third-Party SaaS</th>
+                                                        </tr>
+                                                </thead>
+                                                <tbody class="divide-y divide-white/5">
+                                                        <tr class="hover:bg-white/5">
+                                                                <td class="p-4 text-white/70">Data Sovereignty &
+                                                                        Privacy
+                                                                </td>
+                                                                <td class="p-4 text-center bg-emerald-900/10">
+                                                                        <span class="text-emerald-400 font-bold">100%
+                                                                                On-Premise</span>
+                                                                </td>
+                                                                <td class="p-4 text-center"><span
+                                                                                class="text-red-400">Data leaves
+                                                                                network</span></td>
+                                                        </tr>
+                                                        <tr class="hover:bg-white/5">
+                                                                <td class="p-4 text-white/70">Customization
+                                                                        Depth</td>
+                                                                <td class="p-4 text-center bg-emerald-900/10">
+                                                                        <span
+                                                                                class="text-emerald-400 font-bold">Unlimited</span>
+                                                                </td>
+                                                                <td class="p-4 text-center"><span
+                                                                                class="text-yellow-400">Limited
+                                                                                to
+                                                                                API</span></td>
+                                                        </tr>
+                                                        <tr class="hover:bg-white/5">
+                                                                <td class="p-4 text-white/70">Vendor Lock-In
+                                                                        Risk</td>
+                                                                <td class="p-4 text-center bg-emerald-900/10">
+                                                                        <span
+                                                                                class="text-emerald-400 font-bold">None</span>
+                                                                </td>
+                                                                <td class="p-4 text-center"><span
+                                                                                class="text-red-400">High</span>
+                                                                </td>
+                                                        </tr>
+                                                        <tr class="hover:bg-white/5">
+                                                                <td class="p-4 text-white/70">IP Ownership</td>
+                                                                <td class="p-4 text-center bg-emerald-900/10">
+                                                                        <span class="text-emerald-400 font-bold">100%
+                                                                                Owned</span>
+                                                                </td>
+                                                                <td class="p-4 text-center"><span
+                                                                                class="text-red-400">Licensed
+                                                                                Only</span></td>
+                                                        </tr>
+                                                        <tr class="hover:bg-white/5">
+                                                                <td class="p-4 text-white/70">Regulatory
+                                                                        Compliance
+                                                                        Control</td>
+                                                                <td class="p-4 text-center bg-emerald-900/10">
+                                                                        <span class="text-emerald-400 font-bold">Full
+                                                                                Control</span>
+                                                                </td>
+                                                                <td class="p-4 text-center"><span
+                                                                                class="text-yellow-400">Dependent
+                                                                                on
+                                                                                Vendor</span></td>
+                                                        </tr>
+                                                        <tr class="hover:bg-white/5">
+                                                                <td class="p-4 text-white/70">Feature Roadmap
+                                                                        Control
+                                                                </td>
+                                                                <td class="p-4 text-center bg-emerald-900/10">
+                                                                        <span class="text-emerald-400 font-bold">100%
+                                                                                Internal</span>
+                                                                </td>
+                                                                <td class="p-4 text-center"><span
+                                                                                class="text-red-400">Vendor
+                                                                                Dependent</span></td>
+                                                        </tr>
+                                                        <tr class="hover:bg-white/5">
+                                                                <td class="p-4 text-white/70">Exit Strategy
+                                                                        Flexibility
+                                                                </td>
+                                                                <td class="p-4 text-center bg-emerald-900/10">
+                                                                        <span
+                                                                                class="text-emerald-400 font-bold">Anytime</span>
+                                                                </td>
+                                                                <td class="p-4 text-center"><span
+                                                                                class="text-red-400">Contract
+                                                                                Bound</span></td>
+                                                        </tr>
+                                                </tbody>
+                                        </table>
+                                </div>
+
+                                <!-- Strategic Recommendation Box -->
+                                <div
+                                        class="mt-12 glass rounded-2xl p-8 border-2 border-emerald-500/30 bg-gradient-to-br from-emerald-900/20 to-transparent">
+                                        <h3 class="text-xl font-black text-emerald-400 uppercase tracking-wider mb-4">
+                                                Strategic Final Verdict</h3>
+                                        <div class="grid md:grid-cols-2 gap-8">
+                                                <div>
+                                                        <p class="text-white/80 leading-relaxed mb-4">
+                                                                Building Nexus is not merely a software project;
+                                                                it is a
+                                                                <strong class="text-white">capability
+                                                                        acquisition</strong>.
+                                                                It asserts that our organization will be a
+                                                                primary
+                                                                operator of Sovereign AI, not just a consumer.
+                                                        </p>
+                                                        <p class="text-white/80 leading-relaxed">
+                                                                While competitors rely on generic, black-box
+                                                                third-party
+                                                                tools, <strong class="text-emerald-400">Nexus</strong>
+                                                                provides a branded, secure, and infinitely
+                                                                adaptable
+                                                                "Neural Nervous System" for our enterprise
+                                                                knowledge.
+                                                        </p>
+                                                </div>
+                                                <div class="bg-black/30 rounded-xl p-6">
+                                                        <div
+                                                                class="text-xs text-white/40 uppercase tracking-widest mb-3">
+                                                                Recommendation</div>
+                                                        <div class="text-2xl font-black text-emerald-400 mb-2">
+                                                                Build
+                                                                In-House</div>
+                                                        <ul class="space-y-2 text-sm text-white/70">
+                                                                <li class="flex items-center gap-2"><span
+                                                                                class="text-emerald-400">✓</span>
+                                                                        Full Data Sovereignty (Zero Egress)</li>
+                                                                <li class="flex items-center gap-2"><span
+                                                                                class="text-emerald-400">✓</span>
+                                                                        Own the IP & Model Weights</li>
+                                                                <li class="flex items-center gap-2"><span
+                                                                                class="text-emerald-400">✓</span>
+                                                                        Futuristic, Cinematic UX</li>
+                                                                <li class="flex items-center gap-2"><span
+                                                                                class="text-emerald-400">✓</span>
+                                                                        Vendor-Agnostic Agility</li>
+                                                                <li class="flex items-center gap-2"><span
+                                                                                class="text-emerald-400">✓</span>
+                                                                        Deep Internal System Integration</li>
+                                                        </ul>
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <div class="mt-8 text-center text-white/30 text-xs font-mono">
+                                        <p>Technical Assessment by Nexus Future Architecture Lab.</p>
+                                </div>
                         </section>
+
+                        <button onclick="window.print()"
+                                class="fixed bottom-8 right-8 bg-white text-black font-bold py-3 px-6 rounded-full shadow-lg z-50 hover:scale-105 transition-transform no-print flex items-center gap-2 cursor-pointer border-2 border-black/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="7 10 12 15 17 10" />
+                                        <line x1="12" x2="12" y1="15" y2="3" />
+                                </svg>
+                                Download Analysis PDF
+                        </button>
+                </section>
         </div>
 
         <footer class="text-center text-white/20 text-xs py-8 no-print">
