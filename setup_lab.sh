@@ -3,7 +3,9 @@
 # Consolidated Setup Script for Networking Lab
 # Derived from "COMPLETE 'FROM SCRATCH' GUIDE"
 
-set -e # Exit on error
+set -euo pipefail
+# Allow resize commands to fail gracefully (disk may already be at full size)
+resize_or_skip() { "$@" || echo "(Skipped: already at full size or not needed)"; }
 
 echo "--- Phase 2: Preparing Linux Environment ---"
 
@@ -17,16 +19,17 @@ lsblk
 # Detect LVM or direct partition
 if lsblk | grep -q "ubuntu--vg-ubuntu--lv"; then
     echo "Detected LVM (ubuntu-lv). Resizing..."
-    sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
-    sudo resize2fs /dev/ubuntu-vg/ubuntu-lv
+    resize_or_skip sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+    resize_or_skip sudo resize2fs /dev/ubuntu-vg/ubuntu-lv
 elif lsblk | grep -q "sda3"; then
     echo "Detected sda3 partition. Resizing..."
-    LANG=en_US.UTF-8 sudo growpart /dev/sda 3
-    sudo resize2fs /dev/sda3
+    resize_or_skip sudo growpart /dev/sda 3
+    resize_or_skip sudo resize2fs /dev/sda3
 else
     echo "Attempting direct resize of /dev/sda..."
-    sudo resize2fs /dev/sda || echo "Resize skipped or not needed."
+    resize_or_skip sudo resize2fs /dev/sda
 fi
+echo "Disk resize step complete."
 
 # 3. Install basic tools
 sudo apt install -y net-tools git
