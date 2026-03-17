@@ -118,13 +118,19 @@ sudo docker pull ekellercu/network-testing:v0.1
 
 
 echo "====== PHASE 5: Deploy Topology ======"
-resize_or_skip sudo containerlab destroy -t diamond-mod2.clab.yml
-sudo containerlab deploy -t diamond-mod2.clab.yml
+echo "Disk space before deploy:"
+df -h /
+resize_or_skip sudo containerlab destroy --timeout 5m -t diamond-mod2.clab.yml
+sudo containerlab deploy --timeout 5m -t diamond-mod2.clab.yml
+if [ $? -ne 0 ]; then
+    echo "ERROR: containerlab deploy failed. Check 'sudo docker ps -a' for details."
+    exit 1
+fi
 sudo ./setup-ip-diamond.sh create
 sudo ./start-bird.sh
 
-echo "====== PHASE 6: Waiting 60s for BGP to converge... ======"
-sleep 60
+echo "====== PHASE 6: Waiting 90s for BGP to converge (slow emulation)... ======"
+sleep 90
 
 echo "====== PHASE 7: Verifying BGP Peering ======"
 echo "--- rtrB protocols ---"
