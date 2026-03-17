@@ -7,12 +7,16 @@ resize_or_skip() { "$@" || echo "(skipped: already done)"; }
 
 echo "====== PHASE 1: Installing Tools ======"
 
-# Fix dpkg lock (in case Ubuntu's auto-updater is running in background)
-echo "Clearing any dpkg locks..."
-sudo killall apt apt-get dpkg 2>/dev/null || true
+# Fix dpkg/debconf lock (Ubuntu's auto-updater runs in background)
+echo "Stopping background update services..."
+sudo systemctl stop unattended-upgrades apt-daily.service apt-daily-upgrade.service 2>/dev/null || true
+sudo systemctl disable unattended-upgrades 2>/dev/null || true
+sudo killall apt apt-get dpkg unattended-upgrade 2>/dev/null || true
 sudo rm -f /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock /var/cache/apt/archives/lock
+sudo rm -f /var/cache/debconf/config.dat-old
 sudo dpkg --configure -a 2>/dev/null || true
-sleep 2
+export DEBIAN_FRONTEND=noninteractive
+sleep 3
 
 sudo apt update -y
 sudo apt install -y git curl wget
