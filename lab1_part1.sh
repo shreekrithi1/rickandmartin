@@ -30,6 +30,18 @@ sudo usermod -aG docker $USER
 mkdir -p ~/.docker && echo "{}" > ~/.docker/config.json
 sudo chown $USER:$USER ~/.docker -R
 
+# Switch Docker to 'vfs' storage driver (required for emulated x86 VMs)
+# overlay2 fails with "operation not supported" on this filesystem
+sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json > /dev/null << 'EOF'
+{
+  "storage-driver": "vfs"
+}
+EOF
+sudo systemctl restart docker
+echo "Docker configured with vfs storage driver"
+
+
 # Containerlab
 if ! command -v containerlab &>/dev/null; then
     wget -q https://github.com/srl-labs/containerlab/releases/download/v0.44.0/containerlab_0.44.0_linux_amd64.tar.gz
