@@ -115,24 +115,29 @@ rm -f lab-host1/*.pcap lab-host2/*.pcap lab-host3/*.pcap lab-host4/*.pcap 2>/dev
 echo "[5/5] Running capture_submission.sh..."
 ./provided/capture_submission.sh
 
-echo ""
-echo "========================================"
-echo " Done!  submission.tgz is ready."
-echo "========================================"
+# ----------------------------------------------------------
+# Serve submission.tgz over HTTP so Mac can download it
+# ----------------------------------------------------------
 
-# ----------------------------------------------------------
-# Copy submission.tgz to /vagrant so it's accessible on Mac
-# ----------------------------------------------------------
-if [ -d "/vagrant" ]; then
-    echo "[+] Copying submission.tgz to /vagrant/ (Mac shared folder)..."
-    cp submission.tgz /vagrant/submission.tgz
-    echo "    On your Mac it will be at:"
-    echo "    /Users/narendradarla/Downloads/npp-linux-01-intro-main/submission.tgz"
-else
-    echo "[!] /vagrant not mounted. Manually copy with:"
-    echo "    vagrant scp default:$(pwd)/submission.tgz ~/Downloads/"
-fi
+# Get the VM's IP address (first non-loopback IPv4)
+VM_IP=$(ip addr show | awk '/inet / && !/127.0.0.1/ {print $2}' | cut -d/ -f1 | head -1)
+PORT=8080
 
 echo ""
-echo "Upload submission.tgz to Coursera to submit."
 echo "========================================"
+echo " submission.tgz is ready!"
+echo ""
+echo " Download it on your MAC now."
+echo " Open a NEW Mac terminal and run:"
+echo ""
+echo "   wget http://${VM_IP}:${PORT}/submission.tgz -O ~/Downloads/submission.tgz"
+echo ""
+echo " (Or paste the URL in your Mac browser)"
+echo "========================================"
+echo ""
+echo " Starting HTTP server on port ${PORT}..."
+echo " Press Ctrl+C when done downloading."
+echo ""
+
+cd "$(pwd)"
+python3 -m http.server ${PORT}
