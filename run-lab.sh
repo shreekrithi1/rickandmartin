@@ -17,8 +17,56 @@ cd "$SCRIPT_DIR"
 GITHUB_RAW="https://raw.githubusercontent.com/shreekrithi1/rickandmartin/main"
 
 echo "========================================"
-echo " Lab1 Part1 — End-to-End Setup & Submit"
+echo " Lab1 Part1 --- End-to-End Setup & Submit"
 echo "========================================"
+
+# ----------------------------------------------------------
+# 0. Verify we are in the correct lab1/part1 directory.
+#    If not, auto-search common locations and switch there.
+# ----------------------------------------------------------
+if [ ! -f "provided/capture_submission.sh" ] || [ ! -f "4node-part1.clab.yml" ]; then
+    echo ""
+    echo "WARNING: Not in the lab1/part1 directory. Searching..."
+
+    LAB_DIR=""
+
+    # Check common fixed locations first
+    for candidate in \
+        "/vagrant/lab1/part1" \
+        "$HOME/npp-linux-01-intro-main/lab1/part1" \
+        "$HOME/lab1/part1"
+    do
+        if [ -f "${candidate}/provided/capture_submission.sh" ]; then
+            LAB_DIR="$candidate"
+            break
+        fi
+    done
+
+    # Fallback: use find
+    if [ -z "$LAB_DIR" ]; then
+        FOUND=$(find "$HOME" /vagrant -maxdepth 8 -name "4node-part1.clab.yml" 2>/dev/null | head -1)
+        if [ -n "$FOUND" ]; then
+            LAB_DIR="$(dirname "$FOUND")"
+        fi
+    fi
+
+    if [ -z "$LAB_DIR" ]; then
+        echo ""
+        echo "ERROR: Could not find the lab1/part1 directory."
+        echo "  Please cd into it first, then re-run:"
+        echo ""
+        echo "    cd /vagrant/lab1/part1"
+        echo "    chmod +x run-lab.sh && ./run-lab.sh"
+        echo ""
+        exit 1
+    fi
+
+    echo "  Found: $LAB_DIR"
+    cp "$0" "$LAB_DIR/run-lab.sh"
+    cd "$LAB_DIR"
+    echo "  Switched to: $(pwd)"
+    echo ""
+fi
 
 # ----------------------------------------------------------
 # 1. Create required bind-mount directories
