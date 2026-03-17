@@ -118,5 +118,21 @@ echo "[5/5] Running capture_submission.sh..."
 echo ""
 echo "========================================"
 echo " Done!  submission.tgz is ready."
-echo " Upload submission.tgz to Coursera."
+echo "========================================"
+
+# ----------------------------------------------------------
+# Copy submission.tgz to /vagrant so it's accessible on Mac
+# ----------------------------------------------------------
+if [ -d "/vagrant" ]; then
+    echo "[+] Copying submission.tgz to /vagrant/ (Mac shared folder)..."
+    cp submission.tgz /vagrant/submission.tgz
+    echo "    On your Mac it will be at:"
+    echo "    /Users/narendradarla/Downloads/npp-linux-01-intro-main/submission.tgz"
+else
+    echo "[!] /vagrant not mounted. Manually copy with:"
+    echo "    vagrant scp default:$(pwd)/submission.tgz ~/Downloads/"
+fi
+
+echo ""
+echo "Upload submission.tgz to Coursera to submit."
 echo "========================================"
