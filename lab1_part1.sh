@@ -106,8 +106,16 @@ if ! grep -q "10.10.6.2" setup-ip-diamond.sh; then
     echo "Added eth3 IPs to setup-ip-diamond.sh"
 fi
 
-echo "====== PHASE 4: Pull Docker Image (this may take 10-20 min) ======"
+echo "====== PHASE 4: Pull Docker Image (this may take 20-30 min) ======"
+# Clean up any leftover data from previous failed attempts
+echo "Checking disk space..."
+df -h /
+echo "Cleaning up previous Docker data to free space..."
+sudo docker system prune -a -f 2>/dev/null || true
+echo "Disk space after cleanup:"
+df -h /
 sudo docker pull ekellercu/network-testing:v0.1
+
 
 echo "====== PHASE 5: Deploy Topology ======"
 resize_or_skip sudo containerlab destroy -t diamond-mod2.clab.yml
