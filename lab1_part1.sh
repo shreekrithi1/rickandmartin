@@ -30,16 +30,27 @@ sudo usermod -aG docker $USER
 mkdir -p ~/.docker && echo "{}" > ~/.docker/config.json
 sudo chown $USER:$USER ~/.docker -R
 
-# Switch Docker to 'vfs' storage driver (required for emulated x86 VMs)
-# overlay2 fails with "operation not supported" on this filesystem
+# Configure Docker storage driver
+# Try overlay2 first (faster), fall back to vfs if not supported
 sudo mkdir -p /etc/docker
-sudo tee /etc/docker/daemon.json > /dev/null << 'EOF'
+if sudo modprobe overlay 2>/dev/null && [ -d /sys/module/overlay ]; then
+    echo "Using overlay2 storage driver"
+    sudo tee /etc/docker/daemon.json > /dev/null << 'EOF'
+{
+  "storage-driver": "overlay2"
+}
+EOF
+else
+    echo "overlay2 not supported, using vfs storage driver"
+    sudo tee /etc/docker/daemon.json > /dev/null << 'EOF'
 {
   "storage-driver": "vfs"
 }
 EOF
+fi
 sudo systemctl restart docker
-echo "Docker configured with vfs storage driver"
+sleep 5
+echo "Docker storage driver: $(sudo docker info 2>/dev/null | grep 'Storage Driver' || echo 'unknown')"
 
 
 # Containerlab
@@ -120,8 +131,24 @@ sudo docker pull ekellercu/network-testing:v0.1
 echo "====== PHASE 5: Deploy Topology ======"
 echo "Disk space before deploy:"
 df -h /
-resize_or_skip sudo containerlab destroy --timeout 5m -t diamond-mod2.clab.yml
-sudo containerlab deploy --timeout 5m -t diamond-mod2.clab.yml
+
+# Test Docker can run a container (catches storage driver issues early)
+echo "Testing Docker container runtime..."
+if ! sudo docker run --rm ekellercu/network-testing:v0.1 echo "Docker OK" 2>/dev/null; then
+    echo "WARNING: Docker container test failed. Falling back to vfs driver..."
+    sudo tee /etc/docker/daemon.json > /dev/null << 'EOF'
+{
+  "storage-driver": "vfs"
+}
+EOF
+    sudo systemctl restart docker
+    sleep 5
+    sudo docker system prune -a -f 2>/dev/null || true
+    sudo docker pull ekellercu/network-testing:v0.1
+fi
+
+resize_or_skip sudo containerlab destroy --timeout 10m -t diamond-mod2.clab.yml
+sudo containerlab deploy --timeout 10m -t diamond-mod2.clab.yml
 if [ $? -ne 0 ]; then
     echo "ERROR: containerlab deploy failed. Check 'sudo docker ps -a' for details."
     exit 1
