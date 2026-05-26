@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Production Support — Leadership Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2230;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --p1: #ff4757;
+      --p2: #ff9f43;
+      --p3: #ffd32a;
+      --p4: #54a0ff;
+      --green: #2ed573;
+      --teal: #1abc9c;
+      --purple: #a855f7;
+      --blue: #3b82f6;
+      --accent: #238636;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .jira-logo {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #2684FF, #0052CC);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 16px; color: #fff;
+      box-shadow: 0 0 16px rgba(38,132,255,0.4);
+    }
+    .header-title h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+    .header-title p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .live-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(46,213,115,0.1); border: 1px solid rgba(46,213,115,0.3);
+      color: var(--green); font-size: 12px; font-weight: 600;
+      padding: 4px 10px; border-radius: 20px;
+    }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.4; transform: scale(0.7); }
+    }
+    .sprint-pill {
+      background: var(--surface2); border: 1px solid var(--border);
+      padding: 4px 12px; border-radius: 20px; font-size: 12px; color: var(--muted);
+    }
+    .sprint-pill span { color: var(--blue); font-weight: 600; }
+
+    /* ── MAIN LAYOUT ─────────────────────────────────────── */
+    main { padding: 24px 32px; max-width: 1440px; margin: 0 auto; }
+
+    /* ── SECTION LABEL ───────────────────────────────────── */
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 14px; margin-top: 28px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── KPI CARDS ───────────────────────────────────────── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 14px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      position: relative; overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    .kpi-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .kpi-card.red::before    { background: linear-gradient(90deg, var(--p1), #ff6b81); }
+    .kpi-card.orange::before { background: linear-gradient(90deg, var(--p2), #f1c40f); }
+    .kpi-card.green::before  { background: linear-gradient(90deg, var(--green), var(--teal)); }
+    .kpi-card.blue::before   { background: linear-gradient(90deg, var(--blue), var(--purple)); }
+    .kpi-card.purple::before { background: linear-gradient(90deg, var(--purple), #ec4899); }
+    .kpi-card.teal::before   { background: linear-gradient(90deg, var(--teal), var(--blue)); }
+
+    .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; }
+    .kpi-value { font-size: 34px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+    .kpi-card.red .kpi-value    { color: var(--p1); }
+    .kpi-card.orange .kpi-value { color: var(--p2); }
+    .kpi-card.green .kpi-value  { color: var(--green); }
+    .kpi-card.blue .kpi-value   { color: var(--blue); }
+    .kpi-card.purple .kpi-value { color: var(--purple); }
+    .kpi-card.teal .kpi-value   { color: var(--teal); }
+
+    .kpi-meta { margin-top: 10px; font-size: 12px; display: flex; align-items: center; gap: 5px; }
+    .kpi-delta-up   { color: var(--green); }
+    .kpi-delta-down { color: var(--p1); }
+    .kpi-delta-neutral { color: var(--muted); }
+    .kpi-sub { color: var(--muted); }
+
+    /* ── TWO-COL LAYOUT ──────────────────────────────────── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    /* ── CHART CARD ──────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .card-title { font-size: 14px; font-weight: 700; }
+    .card-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .badge {
+      font-size: 11px; font-weight: 700; padding: 3px 9px;
+      border-radius: 20px; letter-spacing: .3px;
+    }
+    .badge-red    { background: rgba(255,71,87,.15);  color: var(--p1); border: 1px solid rgba(255,71,87,.3); }
+    .badge-orange { background: rgba(255,159,67,.15); color: var(--p2); border: 1px solid rgba(255,159,67,.3); }
+    .badge-green  { background: rgba(46,213,115,.12); color: var(--green); border: 1px solid rgba(46,213,115,.3); }
+    .badge-blue   { background: rgba(59,130,246,.15); color: var(--blue); border: 1px solid rgba(59,130,246,.3); }
+    .badge-purple { background: rgba(168,85,247,.15); color: var(--purple); border: 1px solid rgba(168,85,247,.3); }
+
+    canvas { display: block; }
+
+    /* ── SLA METERS ──────────────────────────────────────── */
+    .sla-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .sla-item { }
+    .sla-head { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+    .sla-name  { color: var(--text); font-weight: 600; }
+    .sla-pct   { font-weight: 800; }
+    .sla-bar   { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+    .sla-fill  { height: 100%; border-radius: 4px; transition: width 1s ease; }
+
+    /* ── TEAM TABLE ──────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      text-align: left; padding: 10px 14px;
+      color: var(--muted); font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .8px;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(48,54,61,.6);
+      transition: background .15s;
+    }
+    tbody tr:hover { background: rgba(255,255,255,.03); }
+    tbody td { padding: 11px 14px; vertical-align: middle; }
+
+    .avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; margin-right: 8px;
+      vertical-align: middle;
+    }
+    .agent-cell { display: flex; align-items: center; }
+
+    .priority-dot {
+      width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px;
+    }
+
+    /* progress mini bar */
+    .mini-bar { width: 80px; height: 6px; background: var(--surface2); border-radius: 3px; display: inline-block; vertical-align: middle; overflow: hidden; }
+    .mini-fill { height: 100%; border-radius: 3px; }
+
+    /* ── INCIDENT TABLE ──────────────────────────────────── */
+    .status-chip {
+      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    .chip-open     { background: rgba(255,71,87,.15);   color: var(--p1); }
+    .chip-progress { background: rgba(255,159,67,.15);  color: var(--p2); }
+    .chip-resolved { background: rgba(46,213,115,.12);  color: var(--green); }
+    .chip-escalate { background: rgba(168,85,247,.15);  color: var(--purple); }
+
+    .jira-key {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px; color: var(--blue); font-weight: 700;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      text-align: center; padding: 24px;
+      font-size: 11px; color: var(--muted);
+      border-top: 1px solid var(--border); margin-top: 32px;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .two-col, .three-col { grid-template-columns: 1fr; }
+      main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════════ -->
+<header>
+  <div class="header-left">
+    <div class="jira-logo">J</div>
+    <div class="header-title">
+      <h1>Production Support — Leadership View</h1>
+      <p>High Priority Ops · Weekly Snapshot · Generated May 26, 2026</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="sprint-pill">Sprint <span>Sprint 42</span></div>
+    <div class="live-badge"><div class="live-dot"></div> Live Data</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ══ KPIs ══════════════════════════════════════════════ -->
+  <div class="section-label">Executive KPIs</div>
+  <div class="kpi-grid">
+    <div class="kpi-card red">
+      <div class="kpi-label">P1 — Critical Open</div>
+      <div class="kpi-value">7</div>
+      <div class="kpi-meta">
+        <span class="kpi-delta-down">▲ 2</span>
+        <span class="kpi-sub">vs last week</span>
+      </div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">P2 — High Open</div>
+      <div class="kpi-value">23</div>
+      <div class="kpi-meta">
+        <span class="kpi-delta-up">▼ 4</span>
+        <span class="kpi-sub">vs last week</span>
+      </div>
+    </div>
+    <div class="kpi-card teal">
+      <div class="kpi-label">SLA Compliance</div>
+      <div class="kpi-value">91<span style="font-size:18px;font-weight:400">%</span></div>
+      <div class="kpi-meta">
+        <span class="kpi-delta-up">▲ 3%</span>
+        <span class="kpi-sub">vs last week</span>
+      </div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">MTTR (hrs)</div>
+      <div class="kpi-value">4.2</div>
+      <div class="kpi-meta">
+        <span class="kpi-delta-up">▼ 0.8h</span>
+        <span class="kpi-sub">improved</span>
+      </div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Resolved This Week</div>
+      <div class="kpi-value">48</div>
+      <div class="kpi-meta">
+        <span class="kpi-delta-up">▲ 11</span>
+        <span class="kpi-sub">vs last week</span>
+      </div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">Escalations</div>
+      <div class="kpi-value">3</div>
+      <div class="kpi-meta">
+        <span class="kpi-delta-up">▼ 2</span>
+        <span class="kpi-sub">vs last week</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CHARTS ROW 1 ══════════════════════════════════════ -->
+  <div class="section-label">Ticket Trends & Volume</div>
+  <div class="two-col">
+
+    <!-- Ticket Volume Trend -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Weekly Ticket Volume</div>
+          <div class="card-sub">Opened vs Resolved (last 8 weeks)</div>
+        </div>
+        <span class="badge badge-blue">Trending ↑</span>
+      </div>
+      <canvas id="volumeChart" height="200"></canvas>
+    </div>
+
+    <!-- Priority Breakdown Donut -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Open Tickets by Priority</div>
+          <div class="card-sub">Current snapshot · 68 total open</div>
+        </div>
+        <span class="badge badge-red">68 Open</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:28px">
+        <div style="position:relative;width:200px;flex-shrink:0">
+          <canvas id="priorityChart" height="200" width="200"></canvas>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+            <div style="font-size:26px;font-weight:800;color:var(--text)">68</div>
+            <div style="font-size:10px;color:var(--muted)">Total</div>
+          </div>
+        </div>
+        <div style="flex:1;">
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">
+              <span><span style="color:var(--p1);font-weight:700">● P1</span> Critical</span>
+              <span style="font-weight:800;color:var(--p1)">7</span>
+            </div>
+            <div class="sla-bar"><div class="sla-fill" style="width:10%;background:var(--p1)"></div></div>
+          </div>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">
+              <span><span style="color:var(--p2);font-weight:700">● P2</span> High</span>
+              <span style="font-weight:800;color:var(--p2)">23</span>
+            </div>
+            <div class="sla-bar"><div class="sla-fill" style="width:34%;background:var(--p2)"></div></div>
+          </div>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">
+              <span><span style="color:var(--p3);font-weight:700">● P3</span> Medium</span>
+              <span style="font-weight:800;color:var(--p3)">28</span>
+            </div>
+            <div class="sla-bar"><div class="sla-fill" style="width:41%;background:var(--p3)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">
+              <span><span style="color:var(--p4);font-weight:700">● P4</span> Low</span>
+              <span style="font-weight:800;color:var(--p4)">10</span>
+            </div>
+            <div class="sla-bar"><div class="sla-fill" style="width:15%;background:var(--p4)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ CHARTS ROW 2 ══════════════════════════════════════ -->
+  <div class="section-label">SLA & Resolution Performance</div>
+  <div class="three-col">
+
+    <!-- SLA Compliance -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">SLA Compliance by Priority</div>
+          <div class="card-sub">This sprint</div>
+        </div>
+        <span class="badge badge-green">91% Avg</span>
+      </div>
+      <div class="sla-grid">
+        <div class="sla-item">
+          <div class="sla-head">
+            <span class="sla-name">P1 (4h SLA)</span>
+            <span class="sla-pct" style="color:var(--p1)">78%</span>
+          </div>
+          <div class="sla-bar">
+            <div class="sla-fill" style="width:78%;background:linear-gradient(90deg,var(--p1),#ff6b81)"></div>
+          </div>
+        </div>
+        <div class="sla-item">
+          <div class="sla-head">
+            <span class="sla-name">P2 (8h SLA)</span>
+            <span class="sla-pct" style="color:var(--p2)">88%</span>
+          </div>
+          <div class="sla-bar">
+            <div class="sla-fill" style="width:88%;background:linear-gradient(90deg,var(--p2),#f1c40f)"></div>
+          </div>
+        </div>
+        <div class="sla-item">
+          <div class="sla-head">
+            <span class="sla-name">P3 (24h SLA)</span>
+            <span class="sla-pct" style="color:var(--green)">95%</span>
+          </div>
+          <div class="sla-bar">
+            <div class="sla-fill" style="width:95%;background:linear-gradient(90deg,var(--green),var(--teal))"></div>
+          </div>
+        </div>
+        <div class="sla-item">
+          <div class="sla-head">
+            <span class="sla-name">P4 (72h SLA)</span>
+            <span class="sla-pct" style="color:var(--blue)">98%</span>
+          </div>
+          <div class="sla-bar">
+            <div class="sla-fill" style="width:98%;background:linear-gradient(90deg,var(--blue),var(--purple))"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:18px;padding:12px;background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.2);border-radius:8px">
+        <div style="font-size:11px;color:var(--p1);font-weight:700;margin-bottom:4px">⚠ SLA AT RISK</div>
+        <div style="font-size:12px;color:var(--muted)">2 P1 tickets approaching breach — escalation recommended</div>
+      </div>
+    </div>
+
+    <!-- MTTR Bar Chart -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Avg Resolution Time</div>
+          <div class="card-sub">Hours by priority · this week</div>
+        </div>
+      </div>
+      <canvas id="mttrChart" height="220"></canvas>
+    </div>
+
+    <!-- Status Distribution -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Ticket Status Distribution</div>
+          <div class="card-sub">Current state of all active tickets</div>
+        </div>
+      </div>
+      <canvas id="statusChart" height="220"></canvas>
+    </div>
+
+  </div>
+
+  <!-- ══ TEAM WORKLOAD ══════════════════════════════════════ -->
+  <div class="section-label">Team Workload & Capacity</div>
+  <div class="two-col">
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Engineer Assignments</div>
+          <div class="card-sub">Open ticket load per engineer</div>
+        </div>
+        <span class="badge badge-orange">5 Engineers</span>
+      </div>
+      <canvas id="workloadChart" height="220"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Team Performance</div>
+          <div class="card-sub">Resolved tickets this sprint · SLA hit rate</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Engineer</th>
+              <th>Resolved</th>
+              <th>Open</th>
+              <th>SLA Hit</th>
+              <th>Capacity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="agent-cell"><div class="avatar" style="background:rgba(59,130,246,.2);color:var(--blue)">AK</div>Ava Kim</div></td>
+              <td style="font-weight:700;color:var(--green)">12</td>
+              <td>5</td>
+              <td><span style="color:var(--green);font-weight:700">96%</span></td>
+              <td><div class="mini-bar"><div class="mini-fill" style="width:71%;background:var(--blue)"></div></div></td>
+            </tr>
+            <tr>
+              <td><div class="agent-cell"><div class="avatar" style="background:rgba(168,85,247,.2);color:var(--purple)">JR</div>Jake Rivera</div></td>
+              <td style="font-weight:700;color:var(--green)">9</td>
+              <td>8</td>
+              <td><span style="color:var(--p2);font-weight:700">82%</span></td>
+              <td><div class="mini-bar"><div class="mini-fill" style="width:88%;background:var(--p2)"></div></div></td>
+            </tr>
+            <tr>
+              <td><div class="agent-cell"><div class="avatar" style="background:rgba(46,213,115,.2);color:var(--green)">SC</div>Sara Chen</div></td>
+              <td style="font-weight:700;color:var(--green)">14</td>
+              <td>3</td>
+              <td><span style="color:var(--green);font-weight:700">98%</span></td>
+              <td><div class="mini-bar"><div class="mini-fill" style="width:50%;background:var(--green)"></div></div></td>
+            </tr>
+            <tr>
+              <td><div class="agent-cell"><div class="avatar" style="background:rgba(255,159,67,.2);color:var(--p2)">MP</div>Marcus Patel</div></td>
+              <td style="font-weight:700;color:var(--green)">8</td>
+              <td>9</td>
+              <td><span style="color:var(--p1);font-weight:700">74%</span></td>
+              <td><div class="mini-bar"><div class="mini-fill" style="width:95%;background:var(--p1)"></div></div></td>
+            </tr>
+            <tr>
+              <td><div class="agent-cell"><div class="avatar" style="background:rgba(26,188,156,.2);color:var(--teal)">LN</div>Lisa Nguyen</div></td>
+              <td style="font-weight:700;color:var(--green)">5</td>
+              <td>4</td>
+              <td><span style="color:var(--green);font-weight:700">91%</span></td>
+              <td><div class="mini-bar"><div class="mini-fill" style="width:60%;background:var(--teal)"></div></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVE CRITICAL INCIDENTS ══════════════════════════ -->
+  <div class="section-label">Active Critical Incidents (P1 &amp; P2)</div>
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Open Incidents Requiring Leadership Attention</div>
+        <div class="card-sub">Sorted by priority · SLA status · last updated</div>
+      </div>
+      <span class="badge badge-red">30 P1/P2 Open</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Summary</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Assignee</th>
+            <th>Age</th>
+            <th>SLA</th>
+            <th>Component</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="jira-key">PROD-4821</span></td>
+            <td style="max-width:220px;font-size:12px">Payment gateway timeout causing checkout failures</td>
+            <td><span class="priority-dot" style="background:var(--p1)"></span><span style="color:var(--p1);font-weight:700;font-size:12px">P1</span></td>
+            <td><span class="status-chip chip-escalate">Escalated</span></td>
+            <td>Marcus Patel</td>
+            <td style="color:var(--p1);font-weight:700">6h 22m</td>
+            <td><span style="color:var(--p1);font-weight:700;font-size:12px">⚠ Breaching</span></td>
+            <td><span style="font-size:11px;color:var(--muted)">Payments</span></td>
+          </tr>
+          <tr>
+            <td><span class="jira-key">PROD-4818</span></td>
+            <td style="max-width:220px;font-size:12px">Auth service latency spikes (P99 > 3s)</td>
+            <td><span class="priority-dot" style="background:var(--p1)"></span><span style="color:var(--p1);font-weight:700;font-size:12px">P1</span></td>
+            <td><span class="status-chip chip-progress">In Progress</span></td>
+            <td>Ava Kim</td>
+            <td style="color:var(--p2);font-weight:700">3h 10m</td>
+            <td><span style="color:var(--p2);font-weight:700;font-size:12px">⚠ At Risk</span></td>
+            <td><span style="font-size:11px;color:var(--muted)">Auth</span></td>
+          </tr>
+          <tr>
+            <td><span class="jira-key">PROD-4815</span></td>
+            <td style="max-width:220px;font-size:12px">Bulk export job failing for enterprise accounts</td>
+            <td><span class="priority-dot" style="background:var(--p1)"></span><span style="color:var(--p1);font-weight:700;font-size:12px">P1</span></td>
+            <td><span class="status-chip chip-progress">In Progress</span></td>
+            <td>Jake Rivera</td>
+            <td style="color:var(--p2);font-weight:700">2h 45m</td>
+            <td><span style="color:var(--green);font-weight:700;font-size:12px">✓ On Track</span></td>
+            <td><span style="font-size:11px;color:var(--muted)">Data</span></td>
+          </tr>
+          <tr>
+            <td><span class="jira-key">PROD-4809</span></td>
+            <td style="max-width:220px;font-size:12px">Notification service dropping webhook events</td>
+            <td><span class="priority-dot" style="background:var(--p2)"></span><span style="color:var(--p2);font-weight:700;font-size:12px">P2</span></td>
+            <td><span class="status-chip chip-open">Open</span></td>
+            <td>Sara Chen</td>
+            <td>1h 05m</td>
+            <td><span style="color:var(--green);font-weight:700;font-size:12px">✓ On Track</span></td>
+            <td><span style="font-size:11px;color:var(--muted)">Notifications</span></td>
+          </tr>
+          <tr>
+            <td><span class="jira-key">PROD-4807</span></td>
+            <td style="max-width:220px;font-size:12px">Search index stale — results up to 12h old</td>
+            <td><span class="priority-dot" style="background:var(--p2)"></span><span style="color:var(--p2);font-weight:700;font-size:12px">P2</span></td>
+            <td><span class="status-chip chip-progress">In Progress</span></td>
+            <td>Lisa Nguyen</td>
+            <td>4h 30m</td>
+            <td><span style="color:var(--green);font-weight:700;font-size:12px">✓ On Track</span></td>
+            <td><span style="font-size:11px;color:var(--muted)">Search</span></td>
+          </tr>
+          <tr>
+            <td><span class="jira-key">PROD-4801</span></td>
+            <td style="max-width:220px;font-size:12px">Mobile app crash on iOS 18.4 — onboarding flow</td>
+            <td><span class="priority-dot" style="background:var(--p2)"></span><span style="color:var(--p2);font-weight:700;font-size:12px">P2</span></td>
+            <td><span class="status-chip chip-resolved">Resolved</span></td>
+            <td>Ava Kim</td>
+            <td style="color:var(--muted);text-decoration:line-through">7h 12m</td>
+            <td><span style="color:var(--green);font-weight:700;font-size:12px">✓ Met</span></td>
+            <td><span style="font-size:11px;color:var(--muted)">Mobile</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ TREND & HEATMAP ════════════════════════════════════ -->
+  <div class="section-label">Sprint History & Component Hotspots</div>
+  <div class="two-col">
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Resolution Rate Trend</div>
+          <div class="card-sub">% tickets resolved within SLA · 8-week trend</div>
+        </div>
+      </div>
+      <canvas id="slaHistoryChart" height="200"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Incidents by Component</div>
+          <div class="card-sub">Where issues are concentrating</div>
+        </div>
+        <span class="badge badge-purple">Hotspots</span>
+      </div>
+      <canvas id="componentChart" height="200"></canvas>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  Production Support Dashboard · Data sourced from JIRA Project <strong>PROD</strong> · JQL: <code style="font-size:11px;background:var(--surface2);padding:2px 6px;border-radius:4px">project = PROD AND priority in (P1,P2,P3,P4) AND updated >= -7d ORDER BY priority ASC</code>
+  · Auto-refreshes every 15 minutes
+</footer>
+
+<!-- ══ CHARTS JS ══════════════════════════════════════════ -->
+<script>
+const CHART_DEFAULTS = {
+  color: '#8b949e',
+  borderColor: '#30363d',
+  backgroundColor: 'transparent',
+};
+Chart.defaults.color = CHART_DEFAULTS.color;
+Chart.defaults.borderColor = CHART_DEFAULTS.borderColor;
+
+const weeks = ['W18','W19','W20','W21','W22','W23','W24','W25'];
+
+// ── 1. Volume trend line ──────────────────────────────────
+new Chart(document.getElementById('volumeChart'), {
+  type: 'line',
+  data: {
+    labels: weeks,
+    datasets: [
+      {
+        label: 'Opened',
+        data: [34, 41, 29, 38, 45, 52, 48, 56],
+        borderColor: '#ff4757',
+        backgroundColor: 'rgba(255,71,87,0.07)',
+        fill: true, tension: 0.45, pointRadius: 4,
+        pointBackgroundColor: '#ff4757', borderWidth: 2,
+      },
+      {
+        label: 'Resolved',
+        data: [30, 36, 32, 35, 38, 45, 52, 48],
+        borderColor: '#2ed573',
+        backgroundColor: 'rgba(46,213,115,0.07)',
+        fill: true, tension: 0.45, pointRadius: 4,
+        pointBackgroundColor: '#2ed573', borderWidth: 2,
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { size: 11 } } } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+    }
+  }
+});
+
+// ── 2. Priority donut ─────────────────────────────────────
+new Chart(document.getElementById('priorityChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['P1', 'P2', 'P3', 'P4'],
+    datasets: [{
+      data: [7, 23, 28, 10],
+      backgroundColor: ['#ff4757','#ff9f43','#ffd32a','#54a0ff'],
+      borderWidth: 3, borderColor: '#161b22',
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    cutout: '72%',
+    plugins: { legend: { display: false } },
+    responsive: false,
+  }
+});
+
+// ── 3. MTTR horizontal bar ────────────────────────────────
+new Chart(document.getElementById('mttrChart'), {
+  type: 'bar',
+  data: {
+    labels: ['P1 Target','P1 Actual','P2 Target','P2 Actual','P3 Target','P3 Actual'],
+    datasets: [{
+      label: 'Hours',
+      data: [4, 5.8, 8, 7.2, 24, 18.5],
+      backgroundColor: [
+        'rgba(59,130,246,0.3)','rgba(255,71,87,0.7)',
+        'rgba(59,130,246,0.3)','rgba(46,213,115,0.7)',
+        'rgba(59,130,246,0.3)','rgba(46,213,115,0.7)',
+      ],
+      borderColor: [
+        '#3b82f6','#ff4757',
+        '#3b82f6','#2ed573',
+        '#3b82f6','#2ed573',
+      ],
+      borderWidth: 1,
+      borderRadius: 5,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, title: { display: true, text: 'Hours', font: { size: 10 } } },
+      y: { grid: { display: false }, ticks: { font: { size: 10 } } }
+    }
+  }
+});
+
+// ── 4. Status distribution bar ────────────────────────────
+new Chart(document.getElementById('statusChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Open','In Progress','In Review','Blocked','Resolved','Closed'],
+    datasets: [{
+      label: 'Tickets',
+      data: [18, 24, 8, 5, 48, 63],
+      backgroundColor: [
+        'rgba(255,71,87,0.7)','rgba(255,159,67,0.7)',
+        'rgba(59,130,246,0.7)','rgba(168,85,247,0.7)',
+        'rgba(46,213,115,0.7)','rgba(139,148,158,0.5)',
+      ],
+      borderRadius: 6,
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' } }
+    }
+  }
+});
+
+// ── 5. Engineer workload ──────────────────────────────────
+new Chart(document.getElementById('workloadChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Ava Kim','Jake Rivera','Sara Chen','Marcus Patel','Lisa Nguyen'],
+    datasets: [
+      {
+        label: 'P1',
+        data: [1, 2, 0, 3, 1],
+        backgroundColor: 'rgba(255,71,87,0.8)',
+        borderRadius: 4, borderWidth: 0,
+      },
+      {
+        label: 'P2',
+        data: [2, 3, 2, 4, 2],
+        backgroundColor: 'rgba(255,159,67,0.8)',
+        borderRadius: 4, borderWidth: 0,
+      },
+      {
+        label: 'P3',
+        data: [2, 3, 1, 2, 1],
+        backgroundColor: 'rgba(255,211,42,0.7)',
+        borderRadius: 4, borderWidth: 0,
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top', labels: { usePointStyle: true, font: { size: 11 }, padding: 14 } }
+    },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, grid: { color: 'rgba(255,255,255,0.04)' }, title: { display: true, text: 'Open Tickets' } }
+    }
+  }
+});
+
+// ── 6. SLA history line ───────────────────────────────────
+new Chart(document.getElementById('slaHistoryChart'), {
+  type: 'line',
+  data: {
+    labels: weeks,
+    datasets: [
+      {
+        label: 'P1 SLA %',
+        data: [72, 68, 75, 70, 74, 76, 78, 78],
+        borderColor: '#ff4757', tension: 0.4,
+        pointBackgroundColor: '#ff4757', borderWidth: 2, pointRadius: 4,
+      },
+      {
+        label: 'P2 SLA %',
+        data: [84, 82, 86, 85, 87, 86, 88, 88],
+        borderColor: '#ff9f43', tension: 0.4,
+        pointBackgroundColor: '#ff9f43', borderWidth: 2, pointRadius: 4,
+      },
+      {
+        label: 'Overall SLA %',
+        data: [85, 83, 87, 86, 88, 89, 91, 91],
+        borderColor: '#2ed573', tension: 0.4,
+        pointBackgroundColor: '#2ed573', borderWidth: 2, pointRadius: 4,
+        borderDash: [4,4],
+      },
+    ]
+  },
+  options: {
+    plugins: { legend: { position: 'top', labels: { usePointStyle: true, font: { size: 11 }, padding: 14 } } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, min: 60, max: 100,
+           ticks: { callback: v => v + '%' } }
+    }
+  }
+});
+
+// ── 7. Component hotspots ─────────────────────────────────
+new Chart(document.getElementById('componentChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Payments','Auth','Data','Notifications','Search','Mobile','API Gateway','DB'],
+    datasets: [{
+      label: 'Incidents (4 weeks)',
+      data: [14, 11, 9, 7, 6, 5, 8, 4],
+      backgroundColor: [
+        'rgba(255,71,87,0.8)','rgba(255,71,87,0.65)','rgba(255,159,67,0.75)',
+        'rgba(255,159,67,0.6)','rgba(59,130,246,0.6)','rgba(59,130,246,0.5)',
+        'rgba(255,159,67,0.5)','rgba(139,148,158,0.5)',
+      ],
+      borderRadius: 6, borderWidth: 0,
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, title: { display: true, text: 'Incident Count' } }
+    }
+  }
+});
+</script>
+</body>
+</html>
